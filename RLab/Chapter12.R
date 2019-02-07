@@ -32,3 +32,14 @@ subway2 <- cbind(subway2, year, month)
 head(subway2)
 
 subname <- read.csv('subway_latlong.csv', header = TRUE, stringsAsFactors = FALSE, encoding = "UTF-8")
+
+#
+tot <- aggregate(subway2[, 'on_tot'], by = list(stat_name = subway2$stat_name), FUN = sum)
+cc <- merge(x = tot, y = subname, by.x = 'stat_name', by.y = 'STATION_NM')
+df2 <- data.frame(stat_name = cc$stat_name, line_num = cc$LINE_NUM, on_tot = cc$x)
+df2 <- df2[with(df2, order(line_num)),]
+df2 <- df2[order(df2$line_num),]
+df2$stat_name <- factor(df2$stat_name, levels = df2$stat_name)
+
+plt <- ggplot(df2, aes(x = stat_name, y = on_tot, fill = line_num, order = line_num))
+plt + theme_bw() + geom_bar(stat = 'identity', colour = 'white') + scale_x_discrete('ÁöÇÏÃ¶¿ª', labels = NULL) + ylab('Å¾½Â°´¼ö') + scale_fill_discrete(name = c('³ë¼±'))
