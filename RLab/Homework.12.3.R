@@ -44,15 +44,6 @@ df2$stat_name <- factor(df2$stat_name, levels = df2$stat_name)
 plt <- ggplot(df2, aes(x = stat_name, y = on_tot, fill = line_num, order = line_num))
 plt + theme_bw() + geom_bar(stat = 'identity', colour = 'white') + scale_x_discrete('ÁöÇÏÃ¶¿ª', labels = NULL) + ylab('Å¾½Â°´¼ö') + scale_fill_discrete(name = c('³ë¼±'))
 
-# top 10 stations
-df3 <- df2[order(-df2$on_tot),] # decreasing
-df3 <- df3[1:10,]
-df3$stat_name <- factor(df3$stat_name, levels = df3$stat_name)
-
-lim <- c(0, max(df3$on_tot))
-plt <- ggplot(df3, aes(stat_name, y = on_tot, fill = line_num))
-plt + geom_bar(stat = 'identity', colour = 'white') + xlab('»óÀ§ 10°³ ÁöÇÏÃ¶¿ª') + scale_y_continuous('Å¾½Â°´¼ö', lim = lim) + scale_fill_discrete(name = c("³ë¼±"))
-
 # bottom 10 stations
 df4 <- df2[order(df2$on_tot),] # increasing
 df4 <- df4[1:10,]
@@ -62,8 +53,8 @@ lim <- c(0, max(df4$on_tot))
 plt <- ggplot(df4, aes(stat_name, y = on_tot, fill = line_num))
 plt + geom_bar(stat = 'identity', colour = 'white') + xlab('ÇÏÀ§ 10°³ ÁöÇÏÃ¶¿ª') + scale_y_continuous('Å¾½Â°´¼ö', lim = lim) + scale_fill_discrete(name = c("³ë¼±"))
 
-# top 10, year 2013
-ten.station <- df3$stat_name
+# bottom 10, year 2013
+ten.station <- df4$stat_name
 year.2013 <- subset(subway2, subset = stat_name %in% ten.station & year == '2013', select = c('stat_name', 'on_tot', 'month'))
 
 # per month, per station
@@ -73,3 +64,5 @@ names(stat_top10_2013)[3] = 'on_tot'
 plt <- ggplot(stat_top10_2013, aes(x = month, y = on_tot, colour = stat_name, group = stat_name))
 plt <- plt + theme_classic() + geom_line() + geom_point(size = 6, shape = 19, alpha = 0.5)
 plt + scale_x_discrete('2013³â', labels = paste0(unique(as.numeric(month)), '¿ù')) + ylab('¿ùº° Å¾½Â°´¼ö') + scale_colour_discrete(name = c('ÁöÇÏÃ¶¿ª'))
+
+# ¿¬ÈÞ¿¡ ÀÇÇÑ ¿µÇâÀÌ ´Ù¼Ò Àû´Ù.
