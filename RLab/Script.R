@@ -1098,3 +1098,67 @@ map <- get_googlemap(center = cen,
                      size = c(480, 480),
                      markers = gc)
 ggmap(map)
+
+
+# linear regression
+head(cars)
+plot(dist ~ speed, data = cars)
+model <- lm(dist ~ speed, cars)
+model
+coef(model)[1] #b
+coef(model)[2] #W
+
+speed <- cars[, 1]
+pred <- 3.932 * speed - 17.579
+compare <- cbind(pred, cars[, 2], abs(pred - cars[, 2]))
+# draw hypothesis
+abline(coef(model))
+
+#  multi variable
+library(car)
+head(Prestige)
+
+newdata <- Prestige[, c(1:4)]
+plot(newdata, pch = 16, col = 'blue', main = 'Matrix Scatterplot')  # pch 16 is a circle
+
+mod <- lm(income ~ education + prestige + women, data = newdata)
+summary(mod)
+
+income = 177.199 * education + 141.435 * prestige - 50 * women - 253.85
+
+# find feature
+library(MASS)
+newdata2 <- Prestige[, c(1:5)]
+head(newdata2)
+mod2 <- lm(income ~ education + prestige + women + census, data = newdata2)
+step <- stepAIC(mod2, direction = 'both')
+
+mod3 <- lm(income ~ prestige + women, data = newdata2)
+summary(mod3)
+
+# logistic regression
+head(iris)
+# must be integer type
+mod4 <- glm(as.integer(Species) ~ ., data = iris)
+summary(mod4)
+
+# Sepal.Length: 5.1
+# Sepal.Width 3.5
+# Petal.Length: 1.4
+# Petal.Width: 0.2
+pred <- -0.11191 * 5.1 - 0.04008 * 3.5 + 0.22865 * 1.4 + 0.60925 * 0.2 + 1.18650
+# pred is 0.917439. 1 is setosa
+unique(iris$Species)
+as.integer(unique(iris$Species))
+
+# multiple input
+unknown <- data.frame(rbind(c(5.1, 3.5, 1.4, 0.2)))
+names(unknown) <- names(iris)[1:4]
+pred <- predict(mod4, unknown) # predict function
+
+test <- iris[, 1:4]
+pred <- predict(mod4, test)
+pred <- round(pred, 0) # find nearest integer
+
+# confirm result: 97.3%
+acc <- mean(pred == as.integer(iris[, 5]))
